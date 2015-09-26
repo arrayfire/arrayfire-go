@@ -8,6 +8,9 @@ import (
 func main() {
 
 	var af arrayfire.AFInfo
+	var a arrayfire.AFArray
+
+	fmt.Printf("a is of type %T\n", a)
 	err := af.Info()
 
 	if err != nil {
