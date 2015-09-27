@@ -14,32 +14,16 @@ import (
 )
 
 var (
-	// ErrGetDeviceCount is an error returned when the af_get_device_count() fails
+	// ErrGetDeviceCount is returned when the af_get_device_count() fails
 	ErrGetDeviceCount = errors.New("Failed: af_get_device_count()")
-	// ErrGetDeviceInfo is an error returned when the af_get_device_info() fails
+	// ErrGetDeviceInfo is returned when the af_get_device_info() fails
 	ErrGetDeviceInfo = errors.New("Failed: af_get_device_info()")
-)
-
-type (
-	_AFArray C.af_array
-	_AFDType C.af_dtype
-	_AFDim   C.dim_t
 )
 
 // AFInfo contains info from call
 type AFInfo struct {
 	DName, DPlatform, Toolkit, Compute string
 	Count                              int
-}
-
-type AFArray struct {
-	_array _AFArray
-}
-
-func (ar *AFArray) Create() error {
-
-	//aferr := C.af_create_array((*C.af_array)(ar._array), const void * const data, C.int(ndims), const dim_t * const dims, const af_dtype type)
-	return nil
 }
 
 // Info returns the name, platform, toolkit, and compute identifiers
