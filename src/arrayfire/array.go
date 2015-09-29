@@ -2,7 +2,6 @@ package arrayfire
 
 /*
 #include <arrayfire.h>
-#include <af/util.h>
 #include <af/array.h>
 extern AFAPI af_err 	af_device_info (char *d_name, char *d_platform, char *d_toolkit, char *d_compute);
 extern AFAPI int 	getDeviceCount();
@@ -11,28 +10,39 @@ extern AFAPI int 	getDeviceCount();
 import "C"
 import (
 	"errors"
+	"fmt"
 	"unsafe"
 )
 
 var (
 	ErrAfCreateArray = errors.New("Failed: af_create_array()")
+	ErrRelease       = errors.New("Failed: af_release_arra()")
 )
 
 type (
-	_AFArray C.af_array
-	_AFDType C.af_dtype
-	_AFDim   C.dim_t
+	AFArray C.af_array
+	AFDType C.af_dtype
+	AFDim   C.dim_t
 )
 
-type AFArray struct {
-	_array _AFArray
+type Array struct {
+	_array AFArray
 }
 
-func (ar *AFArray) Create(data unsafe.Pointer, ndims uint, dims *_AFDim, afType _AFDType) error {
+func (ar *Array) Create(data unsafe.Pointer, ndims uint, dims []AFDim, afType AFDType) error {
 
-	aferr := C.af_create_array((*C.af_array)(ar._array), data, (C.uint)(ndims), (*C.dim_t)(dims), (C.af_dtype)(afType))
+	aferr := C.af_create_array((*C.af_array)(ar._array), data, (C.uint)(ndims), (*C.dim_t)(unsafe.Pointer(&dims)), (C.af_dtype)(afType))
 	if aferr != 0 {
+		fmt.Printf("error: %d\n", aferr)
 		return ErrAfCreateArray
+	}
+	return nil
+}
+
+func (ar *Array) Release() error {
+	aferr := C.af_release_array((C.af_array)(ar._array))
+	if aferr != 0 {
+		return ErrRelease
 	}
 	return nil
 }
@@ -59,10 +69,6 @@ af_err af_get_data_ptr(void *data, const af_array arr)
     return CALL(data, arr);
 }
 
-af_err af_release_array(af_array arr)
-{
-    return CALL(arr);
-}
 
 af_err af_retain_array(af_array *out, const af_array in)
 {

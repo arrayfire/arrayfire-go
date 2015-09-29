@@ -86,7 +86,7 @@ func (w *Window) Show() error {
 	return nil
 }
 
-func (w *Window) DrawPlot(x AFArray, y AFArray, props *AFCell) error {
+func (w *Window) DrawPlot(x Array, y Array, props *AFCell) error {
 	aferr := C.af_draw_plot(w.window, (C.af_array)(x._array), (C.af_array)(y._array), (*C.af_cell)(props))
 	if aferr != 0 {
 		return ErrDrawPlot
@@ -113,7 +113,7 @@ func (w *Window) IsClosed() (bool, error) {
 	return closed, nil
 }
 
-func (w *Window) DrawImage(a AFArray, props AFCell) error {
+func (w *Window) DrawImage(a Array, props AFCell) error {
 	aferr := C.af_draw_image(w.window, (C.af_array)(a._array), (*C.af_cell)(&props))
 	if aferr != 0 {
 		return ErrDrawImage
@@ -121,7 +121,7 @@ func (w *Window) DrawImage(a AFArray, props AFCell) error {
 	return nil
 }
 
-func (w *Window) DrawHist(x AFArray, minval, maxval float64, props AFCell) error {
+func (w *Window) DrawHist(x Array, minval, maxval float64, props AFCell) error {
 	aferr := C.af_draw_hist(w.window, (C.af_array)(x._array), C.double(minval), C.double(maxval), (*C.af_cell)(&props))
 	if aferr != 0 {
 		return ErrDrawHist
