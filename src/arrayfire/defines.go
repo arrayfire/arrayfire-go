@@ -7,22 +7,22 @@ package arrayfire
 import "C"
 
 type (
-	AFError        C.af_err
-	AFDype         C.af_dtype
-	AFSource       C.af_source
-	AFInterpType   C.af_interp_type
-	AFBorderType   C.af_border_type
-	AFConnectivity C.af_connectivity
-	AFConvMode     C.af_conv_mode
-	AFConvDomain   C.af_conv_domain
-	AFMatchType    C.af_match_type
-	AFYccStd       C.af_ycc_std
-	AFCSpace       C.af_cspace_t
-	AFMatProp      C.af_mat_prop
-	AFNormType     C.af_norm_type
-	AFColormap     C.af_colormap
-	AFImageFormat  C.af_image_format
-	// TODO - causeda  build error:  AFBackend      C.af_backend
+	Error        C.af_err
+	Dype         C.af_dtype
+	Source       C.af_source
+	InterpType   C.af_interp_type
+	BorderType   C.af_border_type
+	Connectivity C.af_connectivity
+	ConvMode     C.af_conv_mode
+	ConvDomain   C.af_conv_domain
+	MatchType    C.af_match_type
+	YccStd       C.af_ycc_std
+	CSpace       C.af_cspace_t
+	MatProp      C.af_mat_prop
+	NormType     C.af_norm_type
+	Colormap     C.af_colormap
+	ImageFormat  C.af_image_format
+	// TODO - causeda  build error:  Backend      C.af_backend
 )
 
 const (
@@ -37,68 +37,68 @@ const (
 	S64 = 8 ///< 64-bit signed integral values
 	U64 = 9 ///< 64-bit unsigned integral values
 
-	AF_SUCCESS = 0
+	SUCCESS = 0
 
 	// 100-199 Errors in environment
 
 	///
 	/// The system or device ran out of memory
 	///
-	AF_ERR_NO_MEM = 101
+	ERR_NO_MEM = 101
 
 	///
 	/// There was an error in the device driver
 	///
-	AF_ERR_DRIVER = 102
+	ERR_DRIVER = 102
 
 	///
 	/// There was an error with the runtime environment
 	///
-	AF_ERR_RUNTIME = 103
+	ERR_RUNTIME = 103
 
 	// 200-299 Errors in input parameters
 
 	///
 	/// The input array is not a valid af_array object
 	///
-	AF_ERR_INVALID_ARRAY = 201
+	ERR_INVALID_ARRAY = 201
 
 	///
 	/// One of the function arguments is incorrect
 	///
-	AF_ERR_ARG = 202
+	ERR_ARG = 202
 
 	///
 	/// The size is incorrect
 	///
-	AF_ERR_SIZE = 203
+	ERR_SIZE = 203
 
 	///
 	/// The type is not suppported by this function
 	///
-	AF_ERR_TYPE = 204
+	ERR_TYPE = 204
 
 	///
 	/// The type of the input arrays are not compatible
 	///
-	AF_ERR_DIFF_TYPE = 205
+	ERR_DIFF_TYPE = 205
 
 	///
 	/// Function does not support GFOR / batch mode
 	///
-	AF_ERR_BATCH = 207
+	ERR_BATCH = 207
 
 	// 300-399 Errors for missing software features
 
 	///
 	/// The option is not supported
 	///
-	AF_ERR_NOT_SUPPORTED = 301
+	ERR_NOT_SUPPORTED = 301
 
 	///
 	/// This build of ArrayFire does not support this feature
 	///
-	AF_ERR_NOT_CONFIGURED = 302
+	ERR_NOT_CONFIGURED = 302
 
 	///
 	/// This build of ArrayFire is not compiled with "nonfree" algorithms
@@ -110,17 +110,17 @@ const (
 	///
 	/// This device does not support double
 	///
-	AF_ERR_NO_DBL = 401
+	ERR_NO_DBL = 401
 
 	///
 	/// This build of ArrayFire was not built with graphics or this device does
 	/// not support graphics
 	///
-	AF_ERR_NO_GFX = 402
+	ERR_NO_GFX = 402
 
 	// 500-599 Errors specific to heterogenous API
-	AF_ERR_LOAD_LIB = 501
-	AF_ERR_LOAD_SYM = 502
+	ERR_LOAD_LIB = 501
+	ERR_LOAD_SYM = 502
 
 	// 900-999 Errors from upstream libraries and runtimes
 
@@ -128,12 +128,12 @@ const (
 	/// There was an internal error either in ArrayFire or in a project
 	/// upstream
 	///
-	AF_ERR_INTERNAL = 998
+	ERR_INTERNAL = 998
 
 	///
 	/// Unknown Error
 	///
-	AF_ERR_UNKNOWN = 999
+	ERR_UNKNOWN = 999
 )
 
 var (

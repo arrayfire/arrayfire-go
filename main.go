@@ -34,19 +34,29 @@ func main() {
 	af.SetDevice(0)
 
 	var ndims uint = 1
-	var atyp af.AFDType = af.U32
+	var atyp af.DType = af.U32
 	var data [][]uint32 = [][]uint32{
 		{1, 2, 3, 4, 5},
 	}
 
 	var a af.Array
-	var dims []af.AFDim = []af.AFDim{5}
-	err = a.Create((unsafe.Pointer)(&data[0][0]), ndims, dims, atyp)
+	var dims []af.Dim = []af.Dim{5}
+	err = af.Create(&a, (unsafe.Pointer)(&data[0][0]), ndims, dims, atyp)
+
 	if err != nil {
-		fmt.Printf("failed after create %s:\n", err)
+		panic(fmt.Sprintf("failed creating af.Array %s:\n", err))
 	} else {
 		fmt.Printf("array created\n")
 	}
+
+	defer func() {
+		err = af.Release(a)
+		if err != nil {
+			panic(fmt.Sprintf("failed releasing af.Array %s:\n", err))
+		} else {
+			fmt.Printf("array released\n")
+		}
+	}()
 
 	if false {
 		var w af.Window
