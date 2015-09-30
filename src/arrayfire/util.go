@@ -3,7 +3,6 @@ package arrayfire
 /*
 #include <arrayfire.h>
 */
-// #cgo LDFLAGS: -L/usr/local/lib -lafcuda
 import "C"
 import (
 	"errors"
