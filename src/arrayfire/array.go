@@ -3,10 +3,7 @@ package arrayfire
 /*
 #include <arrayfire.h>
 #include <af/array.h>
-extern AFAPI af_err 	af_device_info (char *d_name, char *d_platform, char *d_toolkit, char *d_compute);
-extern AFAPI int 	getDeviceCount();
 */
-// #cgo LDFLAGS: -L/usr/local/lib -lafcuda
 import "C"
 import (
 	"errors"
@@ -20,18 +17,14 @@ var (
 )
 
 type (
-	AFArray C.af_array
-	AFDType C.af_dtype
-	AFDim   C.dim_t
+	Array C.af_array
+	DType C.af_dtype
+	Dim   C.dim_t
 )
 
-type Array struct {
-	_array AFArray
-}
+func Create(ar *Array, data unsafe.Pointer, ndims uint, dims []Dim, ty DType) error {
 
-func (ar *Array) Create(data unsafe.Pointer, ndims uint, dims []AFDim, afType AFDType) error {
-
-	aferr := C.af_create_array((*C.af_array)(ar._array), data, (C.uint)(ndims), (*C.dim_t)(unsafe.Pointer(&dims)), (C.af_dtype)(afType))
+	aferr := C.af_create_array((*C.af_array)(ar), data, (C.uint)(ndims), (*C.dim_t)(&dims[0]), (C.af_dtype)(ty))
 	if aferr != 0 {
 		fmt.Printf("error: %d\n", aferr)
 		return ErrAfCreateArray
@@ -39,8 +32,8 @@ func (ar *Array) Create(data unsafe.Pointer, ndims uint, dims []AFDim, afType AF
 	return nil
 }
 
-func (ar *Array) Release() error {
-	aferr := C.af_release_array((C.af_array)(ar._array))
+func Release(ar Array) error {
+	aferr := C.af_release_array((C.af_array)(ar))
 	if aferr != 0 {
 		return ErrRelease
 	}

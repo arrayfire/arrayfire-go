@@ -3,16 +3,12 @@ package arrayfire
 /*
 #include <arrayfire.h>
 #include <af/graphics.h>
-extern AFAPI af_err 	af_device_info (char *d_name, char *d_platform, char *d_toolkit, char *d_compute);
-extern AFAPI int 	getDeviceCount();
 */
-// #cgo LDFLAGS: -L/usr/local/lib -lafcuda
 import "C"
 import "errors"
 
 type (
-	AFWindow C.af_window
-	AFCell   C.af_cell
+	Cell C.af_cell
 )
 
 type Window struct {
@@ -86,8 +82,8 @@ func (w *Window) Show() error {
 	return nil
 }
 
-func (w *Window) DrawPlot(x Array, y Array, props *AFCell) error {
-	aferr := C.af_draw_plot(w.window, (C.af_array)(x._array), (C.af_array)(y._array), (*C.af_cell)(props))
+func (w *Window) DrawPlot(x Array, y Array, props *Cell) error {
+	aferr := C.af_draw_plot(w.window, (C.af_array)(x), (C.af_array)(y), (*C.af_cell)(props))
 	if aferr != 0 {
 		return ErrDrawPlot
 	}
@@ -113,16 +109,16 @@ func (w *Window) IsClosed() (bool, error) {
 	return closed, nil
 }
 
-func (w *Window) DrawImage(a Array, props AFCell) error {
-	aferr := C.af_draw_image(w.window, (C.af_array)(a._array), (*C.af_cell)(&props))
+func (w *Window) DrawImage(a Array, props Cell) error {
+	aferr := C.af_draw_image(w.window, (C.af_array)(a), (*C.af_cell)(&props))
 	if aferr != 0 {
 		return ErrDrawImage
 	}
 	return nil
 }
 
-func (w *Window) DrawHist(x Array, minval, maxval float64, props AFCell) error {
-	aferr := C.af_draw_hist(w.window, (C.af_array)(x._array), C.double(minval), C.double(maxval), (*C.af_cell)(&props))
+func (w *Window) DrawHist(x Array, minval, maxval float64, props Cell) error {
+	aferr := C.af_draw_hist(w.window, (C.af_array)(x), C.double(minval), C.double(maxval), (*C.af_cell)(&props))
 	if aferr != 0 {
 		return ErrDrawHist
 	}

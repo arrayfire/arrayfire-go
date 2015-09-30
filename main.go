@@ -1,7 +1,7 @@
 package main
 
 import (
-	"arrayfire"
+	af "arrayfire"
 	"fmt"
 	"time"
 	"unsafe"
@@ -9,42 +9,58 @@ import (
 
 func main() {
 
-	var af arrayfire.AFInfo
-	var a arrayfire.Array
+	af.Info()
 
-	fmt.Printf("a is of type %T\n", a)
-	err := af.Info()
+	var count int
+	var err error
 
+	count, err = af.GetDeviceCount()
 	if err != nil {
-		fmt.Printf("failed %s:\n", err)
-	} else {
-		fmt.Printf("%s, %s, %s, %s\n", af.DName, af.DPlatform, af.Toolkit, af.Compute)
+		panic(fmt.Sprintf("%s\n", err))
+	}
+	fmt.Printf("Number of devices: %d\n", count)
+
+	for idx := 0; idx < count; idx++ {
+		var info af.DeviceInfo
+		af.SetDevice(idx)
+		info, err = af.GetDeviceInfo()
+
+		if err != nil {
+			panic(fmt.Sprintf("failed after info.Info %s:\n", err))
+		}
+		fmt.Printf("%d. Device: %s, Platform: %s, Toolkit: %s, Compute: %s\n", idx, info.DName, info.DPlatform, info.Toolkit, info.Compute)
 	}
 
-	//func (ar *Array) Create(data unsafe.Pointer, ndims uint, dims *AFDim, afType AFDType) error {
+	af.SetDevice(0)
+
 	var ndims uint = 1
-	var atyp arrayfire.AFDType = arrayfire.U32
+	var atyp af.DType = af.U32
 	var data [][]uint32 = [][]uint32{
 		{1, 2, 3, 4, 5},
 	}
 
-	var dims []arrayfire.AFDim = []arrayfire.AFDim{5}
-	err = a.Create((unsafe.Pointer)(&data), ndims, dims, atyp)
+	var a af.Array
+	var dims []af.Dim = []af.Dim{5}
+	err = af.Create(&a, (unsafe.Pointer)(&data[0][0]), ndims, dims, atyp)
+
 	if err != nil {
-		fmt.Printf("failed %s:\n", err)
-	} else {
-		fmt.Printf("array created\n")
+		panic(fmt.Sprintf("failed at s:\n", err))
 	}
 
-	count, err := af.GetDeviceCount()
+	err = af.Print(a)
 	if err != nil {
-		fmt.Printf("failed %s:\n", err)
-	} else {
-		fmt.Printf("device count %d=%d\n", count, af.Count)
+		panic(fmt.Sprintf("failed at %s:\n", err))
 	}
+
+	defer func() {
+		err = af.Release(a)
+		if err != nil {
+			fmt.Printf("failed at %s:\n", err)
+		}
+	}()
 
 	if false {
-		var w arrayfire.Window
+		var w af.Window
 		err = w.Create(400, 400, "test!")
 		if err != nil {
 			fmt.Printf("failed %s:\n", err)
@@ -81,5 +97,6 @@ func main() {
 		}
 	}
 
+	fmt.Printf("Waiting for 10 seconds\n")
 	time.Sleep(10 * time.Second)
 }
