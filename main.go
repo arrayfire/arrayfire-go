@@ -16,12 +16,11 @@ func main() {
 	err := af.Info()
 
 	if err != nil {
-		fmt.Printf("failed %s:\n", err)
+		fmt.Printf("failed after af.Info %s:\n", err)
 	} else {
 		fmt.Printf("%s, %s, %s, %s\n", af.DName, af.DPlatform, af.Toolkit, af.Compute)
 	}
 
-	//func (ar *Array) Create(data unsafe.Pointer, ndims uint, dims *AFDim, afType AFDType) error {
 	var ndims uint = 1
 	var atyp arrayfire.AFDType = arrayfire.U32
 	var data [][]uint32 = [][]uint32{
@@ -29,9 +28,9 @@ func main() {
 	}
 
 	var dims []arrayfire.AFDim = []arrayfire.AFDim{5}
-	err = a.Create((unsafe.Pointer)(&data), ndims, dims, atyp)
+	err = a.Create((unsafe.Pointer)(&data[0][0]), ndims, dims, atyp)
 	if err != nil {
-		fmt.Printf("failed %s:\n", err)
+		fmt.Printf("failed after create %s:\n", err)
 	} else {
 		fmt.Printf("array created\n")
 	}
@@ -81,5 +80,6 @@ func main() {
 		}
 	}
 
+	fmt.Printf("Waiting for 10 seconds\n")
 	time.Sleep(10 * time.Second)
 }

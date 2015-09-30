@@ -30,7 +30,7 @@ type Array struct {
 
 func (ar *Array) Create(data unsafe.Pointer, ndims uint, dims []AFDim, afType AFDType) error {
 
-	aferr := C.af_create_array((*C.af_array)(ar._array), data, (C.uint)(ndims), (*C.dim_t)(unsafe.Pointer(&dims)), (C.af_dtype)(afType))
+	aferr := C.af_create_array((*C.af_array)(&ar._array), data, (C.uint)(ndims), (*C.dim_t)(unsafe.Pointer(&dims[0])), (C.af_dtype)(afType))
 	if aferr != 0 {
 		fmt.Printf("error: %d\n", aferr)
 		return ErrAfCreateArray

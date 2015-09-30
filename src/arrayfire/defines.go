@@ -27,15 +27,15 @@ type (
 
 const (
 	F32 = 0 ///< 32-bit floating point values
-	C32     ///< 32-bit complex floating point values
-	F64     ///< 64-bit complex floating point values
-	C64     ///< 64-bit complex floating point values
-	B8      ///< 8-bit boolean values
-	S32     ///< 32-bit signed integral values
-	U32     ///< 32-bit unsigned integral values
-	U8      ///< 8-bit unsigned integral values
-	S64     ///< 64-bit signed integral values
-	U64     ///< 64-bit unsigned integral values
+	C32 = 1 ///< 32-bit complex floating point values
+	F64 = 2 ///< 64-bit complex floating point values
+	C64 = 3 ///< 64-bit complex floating point values
+	B8  = 4 ///< 8-bit boolean values
+	S32 = 5 ///< 32-bit signed integral values
+	U32 = 6 ///< 32-bit unsigned integral values
+	U8  = 7 ///< 8-bit unsigned integral values
+	S64 = 8 ///< 64-bit signed integral values
+	U64 = 9 ///< 64-bit unsigned integral values
 
 	AF_SUCCESS = 0
 
