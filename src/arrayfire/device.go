@@ -3,8 +3,6 @@ package arrayfire
 /*
 #include <arrayfire.h>
 #include <af/util.h>
-extern AFAPI af_err 	af_device_info (char *d_name, char *d_platform, char *d_toolkit, char *d_compute);
-extern AFAPI int 	getDeviceCount();
 */
 import "C"
 import (
@@ -17,21 +15,29 @@ var (
 	ErrGetDeviceCount = errors.New("Failed: af_get_device_count()")
 	// ErrGetDeviceInfo is returned when the af_get_device_info() fails
 	ErrGetDeviceInfo = errors.New("Failed: af_get_device_info()")
+	ErrSetDevice     = errors.New("Failed: af_set_device()")
 )
 
-// AFInfo contains info from call
-type AFInfo struct {
+type DeviceInfo struct {
 	DName, DPlatform, Toolkit, Compute string
-	Count                              int
+}
+
+func SetDevice(num int) error {
+	aferr := C.af_set_device((C.int)(num))
+	if aferr != 0 {
+		return ErrSetDevice
+	}
+	return nil
 }
 
 // Info returns the name, platform, toolkit, and compute identifiers
-func (af *AFInfo) Info() error {
+func GetDeviceInfo() (DeviceInfo, error) {
 
-	cdname := C.CString(af.DName)
-	cdplatform := C.CString(af.DPlatform)
-	ctoolkit := C.CString(af.Toolkit)
-	ccompute := C.CString(af.Compute)
+	var info DeviceInfo
+	cdname := C.CString(info.DName)
+	cdplatform := C.CString(info.DPlatform)
+	ctoolkit := C.CString(info.Toolkit)
+	ccompute := C.CString(info.Compute)
 
 	defer func() {
 		C.free(unsafe.Pointer(cdname))
@@ -43,26 +49,23 @@ func (af *AFInfo) Info() error {
 	aferr := C.af_device_info(cdname, cdplatform, ctoolkit, ccompute)
 
 	if aferr != 0 {
-		return ErrGetDeviceInfo
+		return info, ErrGetDeviceInfo
 	}
 
-	af.DName = C.GoString(cdname)
-	af.DPlatform = C.GoString(cdplatform)
-	af.Toolkit = C.GoString(ctoolkit)
-	af.Compute = C.GoString(ccompute)
+	info.DName = C.GoString(cdname)
+	info.DPlatform = C.GoString(cdplatform)
+	info.Toolkit = C.GoString(ctoolkit)
+	info.Compute = C.GoString(ccompute)
 
-	// fmt.Printf("[%s, %s, %s, %s]\n", af.DName, af.DPlatform, af.Toolkit, af.Compute)
-
-	return nil
+	return info, nil
 }
 
 // GetDeviceCount returned the device count
-func (af *AFInfo) GetDeviceCount() (int, error) {
+func GetDeviceCount() (int, error) {
 	var cnt int
 	aferr := C.af_get_device_count((*C.int)(unsafe.Pointer(&cnt)))
 	if aferr != 0 {
 		return 0, ErrGetDeviceCount
 	}
-	af.Count = cnt
 	return cnt, nil
 }

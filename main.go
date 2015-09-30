@@ -1,7 +1,7 @@
 package main
 
 import (
-	"arrayfire"
+	af "arrayfire"
 	"fmt"
 	"time"
 	"unsafe"
@@ -9,25 +9,38 @@ import (
 
 func main() {
 
-	var af arrayfire.AFInfo
-	var a arrayfire.Array
+	var count int
+	var err error
 
-	fmt.Printf("a is of type %T\n", a)
-	err := af.Info()
-
+	count, err = af.GetDeviceCount()
 	if err != nil {
-		fmt.Printf("failed after af.Info %s:\n", err)
+		panic(fmt.Sprintf("%s\n", err))
 	} else {
-		fmt.Printf("%s, %s, %s, %s\n", af.DName, af.DPlatform, af.Toolkit, af.Compute)
+		fmt.Printf("Number of devices: %d\n", count)
 	}
 
+	for idx := 0; idx < count; idx++ {
+		var info af.DeviceInfo
+		af.SetDevice(idx)
+		info, err = af.GetDeviceInfo()
+
+		if err != nil {
+			fmt.Printf("failed after info.Info %s:\n", err)
+		} else {
+			fmt.Printf("%d. Device: %s, Platform: %s, Toolkit: %s, Compute: %s\n", idx, info.DName, info.DPlatform, info.Toolkit, info.Compute)
+		}
+	}
+
+	af.SetDevice(0)
+
 	var ndims uint = 1
-	var atyp arrayfire.AFDType = arrayfire.U32
+	var atyp af.AFDType = af.U32
 	var data [][]uint32 = [][]uint32{
 		{1, 2, 3, 4, 5},
 	}
 
-	var dims []arrayfire.AFDim = []arrayfire.AFDim{5}
+	var a af.Array
+	var dims []af.AFDim = []af.AFDim{5}
 	err = a.Create((unsafe.Pointer)(&data[0][0]), ndims, dims, atyp)
 	if err != nil {
 		fmt.Printf("failed after create %s:\n", err)
@@ -35,15 +48,8 @@ func main() {
 		fmt.Printf("array created\n")
 	}
 
-	count, err := af.GetDeviceCount()
-	if err != nil {
-		fmt.Printf("failed %s:\n", err)
-	} else {
-		fmt.Printf("device count %d=%d\n", count, af.Count)
-	}
-
 	if false {
-		var w arrayfire.Window
+		var w af.Window
 		err = w.Create(400, 400, "test!")
 		if err != nil {
 			fmt.Printf("failed %s:\n", err)
