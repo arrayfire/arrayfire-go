@@ -6,7 +6,6 @@ package arrayfire
 extern AFAPI af_err 	af_device_info (char *d_name, char *d_platform, char *d_toolkit, char *d_compute);
 extern AFAPI int 	getDeviceCount();
 */
-// #cgo LDFLAGS: -L/usr/local/lib -lafcuda
 import "C"
 import "errors"
 

@@ -4,7 +4,6 @@ package arrayfire
 #include <arrayfire.h>
 #include <af/defines.h>
 */
-// #cgo LDFLAGS: -L/usr/local/lib -lafcuda
 import "C"
 
 type (
