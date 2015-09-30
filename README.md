@@ -14,12 +14,22 @@ You can get the ArrayFire library from one of the following ways:
  - [Build from source](http://github.com/arrayfire/arrayfire)
 
 #### Set Environment variables
-- Point `AF_PATH` to the **installed** location of ArrayFire.
-- If using the CUDA backend, point `CUDA_PATH` to the location of the CUDA toolkit
-- Point `GOPATH` to the location of arrayfire-go
-- Export `LD_LIBRARY_PATH` on Linux and `DYLD_LIBRARY_PATH` on OSX to point to
-    - `AF_PATH/lib`
-    - `CUDA_PATH/nvvm/lib64` if using CUDA backend.
+
+Point `AF_PATH` to the **installed** location of ArrayFire.
+
+    $ export AF_PATH=/path/to/arrayfire
+
+
+If using the CUDA backend, you will need to include path to nvvm
+
+    $ export NVVM_LIB_PATH=/path/to/cuda/nvvm/lib64 # use nvvm/lib for OSX or 32 bit systems
+
+
+Point `GOPATH` to the location of arrayfire-go
+
+Export `LD_LIBRARY_PATH` on Linux and `DYLD_LIBRARY_PATH` on OSX to point to
+- `AF_PATH/lib`
+- `NVVM_LIB_PATH` if using CUDA backend.
 
 #### Building with appropriate backend
 
@@ -32,7 +42,7 @@ For CPU backend:
 For CUDA backend:
 
     $ export CGO_CFLAGS="-I$AF_PATH/include"
-    $ CGO_LDFLAGS="-L$AF_PATH/lib -lafcuda -lforge -L$CUDA_PATH/nvvm/lib64 -lnvvm"
+    $ export CGO_LDFLAGS="-L$AF_PATH/lib -lafcuda -lforge -L$NVVM_LIB_PATH -lnvvm"
     $ go build
 
 For OpenCL backend:
