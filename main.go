@@ -9,15 +9,16 @@ import (
 
 func main() {
 
+	af.Info()
+
 	var count int
 	var err error
 
 	count, err = af.GetDeviceCount()
 	if err != nil {
 		panic(fmt.Sprintf("%s\n", err))
-	} else {
-		fmt.Printf("Number of devices: %d\n", count)
 	}
+	fmt.Printf("Number of devices: %d\n", count)
 
 	for idx := 0; idx < count; idx++ {
 		var info af.DeviceInfo
@@ -25,10 +26,9 @@ func main() {
 		info, err = af.GetDeviceInfo()
 
 		if err != nil {
-			fmt.Printf("failed after info.Info %s:\n", err)
-		} else {
-			fmt.Printf("%d. Device: %s, Platform: %s, Toolkit: %s, Compute: %s\n", idx, info.DName, info.DPlatform, info.Toolkit, info.Compute)
+			panic(fmt.Sprintf("failed after info.Info %s:\n", err))
 		}
+		fmt.Printf("%d. Device: %s, Platform: %s, Toolkit: %s, Compute: %s\n", idx, info.DName, info.DPlatform, info.Toolkit, info.Compute)
 	}
 
 	af.SetDevice(0)
@@ -44,17 +44,18 @@ func main() {
 	err = af.Create(&a, (unsafe.Pointer)(&data[0][0]), ndims, dims, atyp)
 
 	if err != nil {
-		panic(fmt.Sprintf("failed creating af.Array %s:\n", err))
-	} else {
-		fmt.Printf("array created\n")
+		panic(fmt.Sprintf("failed at s:\n", err))
+	}
+
+	err = af.Print(a)
+	if err != nil {
+		panic(fmt.Sprintf("failed at %s:\n", err))
 	}
 
 	defer func() {
 		err = af.Release(a)
 		if err != nil {
-			panic(fmt.Sprintf("failed releasing af.Array %s:\n", err))
-		} else {
-			fmt.Printf("array released\n")
+			fmt.Printf("failed at %s:\n", err)
 		}
 	}()
 

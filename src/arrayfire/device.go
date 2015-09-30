@@ -2,7 +2,6 @@ package arrayfire
 
 /*
 #include <arrayfire.h>
-#include <af/util.h>
 */
 import "C"
 import (
@@ -11,11 +10,9 @@ import (
 )
 
 var (
-	// ErrGetDeviceCount is returned when the af_get_device_count() fails
 	ErrGetDeviceCount = errors.New("Failed: af_get_device_count()")
-	// ErrGetDeviceInfo is returned when the af_get_device_info() fails
-	ErrGetDeviceInfo = errors.New("Failed: af_get_device_info()")
-	ErrSetDevice     = errors.New("Failed: af_set_device()")
+	ErrGetDeviceInfo  = errors.New("Failed: af_get_device_info()")
+	ErrSetDevice      = errors.New("Failed: af_set_device()")
 )
 
 type DeviceInfo struct {
