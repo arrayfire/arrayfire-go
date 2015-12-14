@@ -13,7 +13,7 @@ import (
 
 var (
 	ErrAfCreateArray = errors.New("Failed: af_create_array()")
-	ErrRelease       = errors.New("Failed: af_release_arra()")
+	ErrRelease       = errors.New("Failed: af_release_array()")
 )
 
 type (
@@ -25,6 +25,7 @@ type (
 func Create(ar *Array, data unsafe.Pointer, ndims uint, dims []Dim, ty DType) error {
 
 	aferr := C.af_create_array((*C.af_array)(ar), data, (C.uint)(ndims), (*C.dim_t)(&dims[0]), (C.af_dtype)(ty))
+
 	if aferr != 0 {
 		fmt.Printf("error: %d\n", aferr)
 		return ErrAfCreateArray

@@ -9,20 +9,11 @@ import (
 )
 
 var (
-	ErrPrint = errors.New("Failed: af_print_array()")
-	ErrInfo  = errors.New("Failed: af_get_device_info()")
+	ErrPrint = errors.New("Failed: af_print_array_gen()")
 )
 
-func Info() error {
-	aferr := C.af_info()
-	if aferr != 0 {
-		return ErrInfo
-	}
-	return nil
-}
-
 func Print(arr Array) error {
-	aferr := C.af_print_array((C.af_array)(arr))
+	aferr := C.af_print_array_gen(C.CString(""), (C.af_array)(arr), 4)
 	if aferr != 0 {
 		return ErrGetDeviceCount
 	}

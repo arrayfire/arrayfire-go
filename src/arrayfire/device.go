@@ -13,10 +13,19 @@ var (
 	ErrGetDeviceCount = errors.New("Failed: af_get_device_count()")
 	ErrGetDeviceInfo  = errors.New("Failed: af_get_device_info()")
 	ErrSetDevice      = errors.New("Failed: af_set_device()")
+	ErrInfo           = errors.New("Failed: af_info()")
 )
 
 type DeviceInfo struct {
 	DName, DPlatform, Toolkit, Compute string
+}
+
+func Info() error {
+	aferr := C.af_info()
+	if aferr != 0 {
+		return ErrInfo
+	}
+	return nil
 }
 
 func SetDevice(num int) error {
