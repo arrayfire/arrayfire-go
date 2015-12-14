@@ -40,7 +40,7 @@ func main() {
 
 	var a af.Array
 	var dims []af.Dim = []af.Dim{5}
-	err = af.Create(&a, (unsafe.Pointer)(&data[0][0]), ndims, dims, atyp)
+	a, err = af.CreateArray((unsafe.Pointer)(&data[0][0]), ndims, dims, atyp)
 
 	if err != nil {
 		panic(fmt.Sprintf("failed at s:\n", err))
@@ -52,7 +52,7 @@ func main() {
 	}
 
 	defer func() {
-		err = af.Release(a)
+		err = af.ReleaseArray(a)
 		if err != nil {
 			fmt.Printf("failed at %s:\n", err)
 		}

@@ -7,7 +7,6 @@ package arrayfire
 import "C"
 import (
 	"errors"
-	"fmt"
 	"unsafe"
 )
 
@@ -17,26 +16,34 @@ var (
 )
 
 type (
-	Array C.af_array
-	DType C.af_dtype
-	Dim   C.dim_t
+	_Array C.af_array
+	DType  C.af_dtype
+	Dim    C.dim_t
 )
 
-func Create(ar *Array, data unsafe.Pointer, ndims uint, dims []Dim, ty DType) error {
-
-	aferr := C.af_create_array((*C.af_array)(ar), data, (C.uint)(ndims), (*C.dim_t)(&dims[0]), (C.af_dtype)(ty))
-
-	if aferr != 0 {
-		fmt.Printf("error: %d\n", aferr)
-		return ErrAfCreateArray
-	}
-	return nil
+type Array struct {
+	arr _Array
 }
 
-func Release(ar Array) error {
-	aferr := C.af_release_array((C.af_array)(ar))
+func CreateArray(data unsafe.Pointer, ndims uint, dims []Dim, ty DType) (Array, error) {
+
+	var a Array
+	aferr := C.af_create_array((*C.af_array)(&a.arr), data, (C.uint)(ndims), (*C.dim_t)(&dims[0]), (C.af_dtype)(ty))
+
 	if aferr != 0 {
-		return ErrRelease
+		return a, ErrAfCreateArray
+	}
+	return a, nil
+}
+
+func ReleaseArray(a Array) error {
+
+	if a.arr != nil {
+		aferr := C.af_release_array((C.af_array)(a.arr))
+		if aferr != 0 {
+			return ErrRelease
+		}
+		a.arr = nil
 	}
 	return nil
 }

@@ -83,7 +83,7 @@ func (w *Window) Show() error {
 }
 
 func (w *Window) DrawPlot(x Array, y Array, props *Cell) error {
-	aferr := C.af_draw_plot(w.window, (C.af_array)(x), (C.af_array)(y), (*C.af_cell)(props))
+	aferr := C.af_draw_plot(w.window, (C.af_array)(x.arr), (C.af_array)(y.arr), (*C.af_cell)(props))
 	if aferr != 0 {
 		return ErrDrawPlot
 	}
@@ -110,7 +110,7 @@ func (w *Window) IsClosed() (bool, error) {
 }
 
 func (w *Window) DrawImage(a Array, props Cell) error {
-	aferr := C.af_draw_image(w.window, (C.af_array)(a), (*C.af_cell)(&props))
+	aferr := C.af_draw_image(w.window, (C.af_array)(a.arr), (*C.af_cell)(&props))
 	if aferr != 0 {
 		return ErrDrawImage
 	}
@@ -118,7 +118,7 @@ func (w *Window) DrawImage(a Array, props Cell) error {
 }
 
 func (w *Window) DrawHist(x Array, minval, maxval float64, props Cell) error {
-	aferr := C.af_draw_hist(w.window, (C.af_array)(x), C.double(minval), C.double(maxval), (*C.af_cell)(&props))
+	aferr := C.af_draw_hist(w.window, (C.af_array)(x.arr), C.double(minval), C.double(maxval), (*C.af_cell)(&props))
 	if aferr != 0 {
 		return ErrDrawHist
 	}
