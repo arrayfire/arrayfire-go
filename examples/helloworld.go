@@ -3,7 +3,6 @@ package main
 import (
 	af "arrayfire"
 	"fmt"
-	"time"
 	"unsafe"
 )
 
@@ -58,45 +57,4 @@ func main() {
 			fmt.Printf("failed at %s:\n", err)
 		}
 	}()
-
-	if false {
-		var w af.Window
-		err = w.Create(400, 400, "test!")
-		if err != nil {
-			fmt.Printf("failed %s:\n", err)
-		} else {
-			fmt.Printf("Created window\n")
-		}
-
-		err = w.SetPosition(400, 400)
-		if err != nil {
-			fmt.Printf("failed %s:\n", err)
-		} else {
-			fmt.Printf("Set window position\n")
-		}
-
-		err = w.SetTitle("Testing Title")
-		if err != nil {
-			fmt.Printf("failed %s:\n", err)
-		} else {
-			fmt.Printf("Set window title\n")
-		}
-
-		err = w.Grid(10, 10)
-		if err != nil {
-			fmt.Printf("failed %s:\n", err)
-		} else {
-			fmt.Printf("Set window grid\n")
-		}
-
-		err = w.Show()
-		if err != nil {
-			fmt.Printf("failed %s:\n", err)
-		} else {
-			fmt.Printf("show window\n")
-		}
-	}
-
-	fmt.Printf("Waiting for 10 seconds\n")
-	time.Sleep(10 * time.Second)
 }
