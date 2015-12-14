@@ -31,25 +31,15 @@ Export `LD_LIBRARY_PATH` on Linux and `DYLD_LIBRARY_PATH` on OSX to point to
 - `AF_PATH/lib`
 - `NVVM_LIB_PATH` if using CUDA backend.
 
-#### Building with appropriate backend
+#### Building with arrayfire libraries
 
-For CPU backend:
-
-    $ export CGO_CFLAGS="-I$AF_PATH/include"
-    $ export CGO_LDFLAGS="-L$AF_PATH/lib -lafcpu -lforge"
-    $ go build
-
-For CUDA backend:
+For ArrayFire 3.2 and above:
 
     $ export CGO_CFLAGS="-I$AF_PATH/include"
-    $ export CGO_LDFLAGS="-L$AF_PATH/lib -lafcuda -lforge -L$NVVM_LIB_PATH -lnvvm"
+    $ export CGO_LDFLAGS="-L$AF_PATH/lib -laf -lforge"
     $ go build
 
-For OpenCL backend:
-
-    $ export CGO_CFLAGS="-I$AF_PATH/include"
-    $ export CGO_LDFLAGS="-L$AF_PATH/lib -lafopencl -lforge"
-    $ go build
+For older versions replace `-laf` with either `-lafcuda`, `-lafopencl` or `-lafcpu`
 
 ## Contribute
 
