@@ -6,14 +6,8 @@ package arrayfire
 */
 import "C"
 import (
-	"errors"
 	"runtime"
 	"unsafe"
-)
-
-var (
-	ErrAfCreateArray = errors.New("Failed: af_create_array()")
-	ErrRelease       = errors.New("Failed: af_release_array()")
 )
 
 type (
@@ -27,39 +21,58 @@ type array struct {
 
 type Array *array
 
-func release(a Array) error {
+func release(a Array) (e error) {
+	e = nil
 	if a.arr != nil {
-		aferr := C.af_release_array((C.af_array)(a.arr))
-		if aferr != 0 {
-			return ErrRelease
-		}
+		e = af_call(C.af_release_array((C.af_array)(a.arr)))
 		a.arr = nil
 	}
-	return nil
-}
-
-func register(a array) (r Array) {
-
-	//TODO: Call runtime.GC() depending on how much memory is left on device
-
-	r = &a
-	runtime.SetFinalizer(r, release)
 	return
 }
 
-func CreateArray(data unsafe.Pointer, ndims uint, dims []Dim, ty DType) (r Array, err error) {
+func register(in array) (out Array) {
 
-	r = nil
+	//TODO: Call runtime.GC() depending on how much memory is left on device
+
+	out = &in
+	runtime.SetFinalizer(out, release)
+	return
+}
+
+func CreateArray(data unsafe.Pointer, ndims uint, dims []Dim, ty DType) (out Array, err error) {
+
+	out = nil
 	err = nil
 
 	var a array
-	aferr := C.af_create_array(&a.arr, data, (C.uint)(ndims), (*C.dim_t)(&dims[0]), (C.af_dtype)(ty))
+	err = af_call(C.af_create_array(&a.arr, data, (C.uint)(ndims),
+		(*C.dim_t)(&dims[0]), (C.af_dtype)(ty)))
 
-	if aferr != 0 {
-		err = ErrAfCreateArray
-	}
+	out = register(a)
+	return
+}
 
-	r = register(a)
+func CopyArray(in Array) (out Array, err error) {
+
+	out = nil
+	err = nil
+
+	var a array
+	err = af_call(C.af_copy_array(&a.arr, in.arr))
+
+	out = register(a)
+	return
+}
+
+func RetainArray(in Array) (out Array, err error) {
+
+	out = nil
+	err = nil
+
+	var a array
+	err = af_call(C.af_retain_array(&a.arr, in.arr))
+
+	out = register(a)
 	return
 }
 
@@ -70,11 +83,6 @@ af_err af_create_handle(af_array *arr, const unsigned ndims, const dim_t * const
     return CALL(arr, ndims, dims, type);
 }
 
-af_err af_copy_array(af_array *arr, const af_array in)
-{
-    return CALL(arr, in);
-}
-
 af_err af_write_array(af_array arr, const void *data, const size_t bytes, af_source src)
 {
     return CALL(arr, data, bytes, src);
@@ -83,12 +91,6 @@ af_err af_write_array(af_array arr, const void *data, const size_t bytes, af_sou
 af_err af_get_data_ptr(void *data, const af_array arr)
 {
     return CALL(data, arr);
-}
-
-
-af_err af_retain_array(af_array *out, const af_array in)
-{
-    return CALL(out, in);
 }
 
 af_err af_get_data_ref_count(int *use_count, const af_array in)

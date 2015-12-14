@@ -5,15 +5,7 @@ package arrayfire
 */
 import "C"
 import (
-	"errors"
 	"unsafe"
-)
-
-var (
-	ErrGetDeviceCount = errors.New("Failed: af_get_device_count()")
-	ErrGetDeviceInfo  = errors.New("Failed: af_get_device_info()")
-	ErrSetDevice      = errors.New("Failed: af_set_device()")
-	ErrInfo           = errors.New("Failed: af_info()")
 )
 
 type DeviceInfo struct {
@@ -21,25 +13,16 @@ type DeviceInfo struct {
 }
 
 func Info() error {
-	aferr := C.af_info()
-	if aferr != 0 {
-		return ErrInfo
-	}
-	return nil
+	return af_call(C.af_info())
 }
 
 func SetDevice(num int) error {
-	aferr := C.af_set_device((C.int)(num))
-	if aferr != 0 {
-		return ErrSetDevice
-	}
-	return nil
+	return af_call(C.af_set_device((C.int)(num)))
 }
 
 // Info returns the name, platform, toolkit, and compute identifiers
-func GetDeviceInfo() (DeviceInfo, error) {
+func GetDeviceInfo() (info DeviceInfo, e error) {
 
-	var info DeviceInfo
 	cdname := C.CString(info.DName)
 	cdplatform := C.CString(info.DPlatform)
 	ctoolkit := C.CString(info.Toolkit)
@@ -52,26 +35,18 @@ func GetDeviceInfo() (DeviceInfo, error) {
 		C.free(unsafe.Pointer(ccompute))
 	}()
 
-	aferr := C.af_device_info(cdname, cdplatform, ctoolkit, ccompute)
-
-	if aferr != 0 {
-		return info, ErrGetDeviceInfo
-	}
+	e = af_call(C.af_device_info(cdname, cdplatform, ctoolkit, ccompute))
 
 	info.DName = C.GoString(cdname)
 	info.DPlatform = C.GoString(cdplatform)
 	info.Toolkit = C.GoString(ctoolkit)
 	info.Compute = C.GoString(ccompute)
 
-	return info, nil
+	return
 }
 
 // GetDeviceCount returned the device count
-func GetDeviceCount() (int, error) {
-	var cnt int
-	aferr := C.af_get_device_count((*C.int)(unsafe.Pointer(&cnt)))
-	if aferr != 0 {
-		return 0, ErrGetDeviceCount
-	}
-	return cnt, nil
+func GetDeviceCount() (count int, e error) {
+	e = af_call(C.af_get_device_count((*C.int)(unsafe.Pointer(&count))))
+	return
 }

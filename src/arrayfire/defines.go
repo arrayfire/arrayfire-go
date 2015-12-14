@@ -7,7 +7,6 @@ package arrayfire
 import "C"
 
 type (
-	Error        C.af_err
 	Dype         C.af_dtype
 	Source       C.af_source
 	InterpType   C.af_interp_type
@@ -36,108 +35,6 @@ const (
 	U8  = 7 ///< 8-bit unsigned integral values
 	S64 = 8 ///< 64-bit signed integral values
 	U64 = 9 ///< 64-bit unsigned integral values
-
-	SUCCESS = 0
-
-	// 100-199 Errors in environment
-
-	///
-	/// The system or device ran out of memory
-	///
-	ERR_NO_MEM = 101
-
-	///
-	/// There was an error in the device driver
-	///
-	ERR_DRIVER = 102
-
-	///
-	/// There was an error with the runtime environment
-	///
-	ERR_RUNTIME = 103
-
-	// 200-299 Errors in input parameters
-
-	///
-	/// The input array is not a valid af_array object
-	///
-	ERR_INVALID_ARRAY = 201
-
-	///
-	/// One of the function arguments is incorrect
-	///
-	ERR_ARG = 202
-
-	///
-	/// The size is incorrect
-	///
-	ERR_SIZE = 203
-
-	///
-	/// The type is not suppported by this function
-	///
-	ERR_TYPE = 204
-
-	///
-	/// The type of the input arrays are not compatible
-	///
-	ERR_DIFF_TYPE = 205
-
-	///
-	/// Function does not support GFOR / batch mode
-	///
-	ERR_BATCH = 207
-
-	// 300-399 Errors for missing software features
-
-	///
-	/// The option is not supported
-	///
-	ERR_NOT_SUPPORTED = 301
-
-	///
-	/// This build of ArrayFire does not support this feature
-	///
-	ERR_NOT_CONFIGURED = 302
-
-	///
-	/// This build of ArrayFire is not compiled with "nonfree" algorithms
-	///
-	AFF_ERR_NONFREE = 303
-
-	// 400-499 Errors for missing hardware features
-
-	///
-	/// This device does not support double
-	///
-	ERR_NO_DBL = 401
-
-	///
-	/// This build of ArrayFire was not built with graphics or this device does
-	/// not support graphics
-	///
-	ERR_NO_GFX = 402
-
-	// 500-599 Errors specific to heterogenous API
-	ERR_LOAD_LIB = 501
-	ERR_LOAD_SYM = 502
-
-	// 900-999 Errors from upstream libraries and runtimes
-
-	///
-	/// There was an internal error either in ArrayFire or in a project
-	/// upstream
-	///
-	ERR_INTERNAL = 998
-
-	///
-	/// Unknown Error
-	///
-	ERR_UNKNOWN = 999
-)
-
-var (
-//ErrNone = errors.New("No Error")
 )
 
 /*
