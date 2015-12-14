@@ -27,7 +27,9 @@ func main() {
 		if err != nil {
 			panic(fmt.Sprintf("failed after info.Info %s:\n", err))
 		}
-		fmt.Printf("%d. Device: %s, Platform: %s, Toolkit: %s, Compute: %s\n", idx, info.DName, info.DPlatform, info.Toolkit, info.Compute)
+
+		fmt.Printf("%d. Device: %s, Platform: %s, Toolkit: %s, Compute: %s\n",
+			idx, info.DName, info.DPlatform, info.Toolkit, info.Compute)
 	}
 
 	af.SetDevice(0)
@@ -50,11 +52,4 @@ func main() {
 	if err != nil {
 		panic(fmt.Sprintf("failed at %s:\n", err))
 	}
-
-	defer func() {
-		err = af.ReleaseArray(a)
-		if err != nil {
-			fmt.Printf("failed at %s:\n", err)
-		}
-	}()
 }

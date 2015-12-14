@@ -7,6 +7,7 @@ package arrayfire
 import "C"
 import (
 	"errors"
+	"runtime"
 	"unsafe"
 )
 
@@ -16,28 +17,17 @@ var (
 )
 
 type (
-	_Array C.af_array
-	DType  C.af_dtype
-	Dim    C.dim_t
+	DType C.af_dtype
+	Dim   C.dim_t
 )
 
-type Array struct {
-	arr _Array
+type array struct {
+	arr C.af_array
 }
 
-func CreateArray(data unsafe.Pointer, ndims uint, dims []Dim, ty DType) (Array, error) {
+type Array *array
 
-	var a Array
-	aferr := C.af_create_array((*C.af_array)(&a.arr), data, (C.uint)(ndims), (*C.dim_t)(&dims[0]), (C.af_dtype)(ty))
-
-	if aferr != 0 {
-		return a, ErrAfCreateArray
-	}
-	return a, nil
-}
-
-func ReleaseArray(a Array) error {
-
+func release(a Array) error {
 	if a.arr != nil {
 		aferr := C.af_release_array((C.af_array)(a.arr))
 		if aferr != 0 {
@@ -46,6 +36,31 @@ func ReleaseArray(a Array) error {
 		a.arr = nil
 	}
 	return nil
+}
+
+func register(a array) (r Array) {
+
+	//TODO: Call runtime.GC() depending on how much memory is left on device
+
+	r = &a
+	runtime.SetFinalizer(r, release)
+	return
+}
+
+func CreateArray(data unsafe.Pointer, ndims uint, dims []Dim, ty DType) (r Array, err error) {
+
+	r = nil
+	err = nil
+
+	var a array
+	aferr := C.af_create_array(&a.arr, data, (C.uint)(ndims), (*C.dim_t)(&dims[0]), (C.af_dtype)(ty))
+
+	if aferr != 0 {
+		err = ErrAfCreateArray
+	}
+
+	r = register(a)
+	return
 }
 
 /*
